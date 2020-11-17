@@ -22,10 +22,9 @@
 		position:absolute;
 	}
 	#explosion{
-		background: url('1942.gif');
-		background-position: -291px -40px;
-		width:28px;
-		height:19px;
+		background: url('explosion.gif');
+		width:30px;
+		height:30px;
 		position:absolute;
 	}
 	.enemy1{
@@ -59,6 +58,26 @@
 		font-size:30px;
 		font-family: Arial;	
 	}
+	#Start{
+		position:absolute;
+		border:5px solid rgb(3, 235, 92);
+		top:270px;
+		left:800px;
+		background-color:white;
+		padding:10px;
+		font-size:20px;
+		font-family: Arial;	
+	}
+	#checkbox{
+		position:absolute;
+		border:5px solid rgb(3, 235, 92);
+		top:350px;
+		left:800px;
+		background-color:white;
+		padding:10px;
+		font-size:10px;
+		font-family: Arial;	
+	}
 </style>
 </head>
 <body>
@@ -69,25 +88,37 @@
 		<div id='bullets'>
 		</div>
 		<div id="explosion" style="display: none;"></div>
-		<audio id="audio" src="explosion.mp3"></audio>
 	</div>
 
 	<div id='score'>0</div>
+	<button id='Start'>Comenzar</button>
+	<div id="checkbox">
+		<input id="mousecheck" type="checkbox" checked>
+		<label for="mousecheck">Asociar movimiento al mouse</label>
+	</div>
+	
+	
 
 
 <script>
-	
+	var randomX = (Math.random()*700)+38
+	var ramdomX2 = (Math.floor(Math.random()*9)+2) * 70;
 	var hero = {x: 300,y:300}
-	var enemies = [{x: 50, y: 150}, {x: 250, y: 15}, {x: 450, y:50}, {x: 550, y:120}, {x: 320, y:130}, {x: 470, y:160}, {x: 780, y:80}]
-	var enemies2 = [{x: 20, y: 40, l: 0}, {x: 350, y: 85, l: 0}, {x: 520, y:30, l: 0}, {x: 870, y:100, l: 0}, {x: 740, y:90, l: 0}]
+	var enemies = [{x: 50, y: 150}, {x: 250, y: 15}, {x: (Math.random()*700)+38, y:50}, {x: 550, y:120}, {x: 320, y:130}, {x: 470, y:160}, {x: 780, y:80}]
+	var enemies2 = [{x: 20, y: 40, l: 0}, {x: (Math.random()*700)+38, y: 85, l: 0}, {x: 520, y:30, l: 0}, {x: 870, y:100, l: 0}, {x: 740, y:90, l: 0}]
 	var bullets = [];	
 	var score = 0;
 	var startLoopgame;
+	var check;
+	
+	
 
 	//bucles principales
 	function autoBullets(){
 		bullets.push({x: hero.x+8, y: hero.y-15});
-		console.log(bullets);
+		var audio3 = new Audio('pew.wav');
+		audio3.play();
+		// console.log(bullets);
 	}
 
 	function gameloop(){
@@ -100,6 +131,7 @@
 		displayBullets();
 		detectCollisionBullets();
 		detectCollisionHero();
+		check = document.getElementById('mousecheck').checked;
 		
 		if(rightPressed) {
 			hero.x += 1;
@@ -191,6 +223,8 @@
 					bullets[i].y = -1
 					enemies[j].y = 0;
 					enemies[j].x = Math.random()*700
+					let audio = new Audio("explosion.mp3");
+					audio.play();
 				}
 			}
 			for(let k=0; k<enemies2.length; k++){
@@ -199,7 +233,9 @@
 					explosion(enemies2[k].x,enemies2[k].y);
 					bullets[i].y = -1
 					enemies2[k].y = 0;
-					enemies2[k].x = (Math.floor(Math.random()*9)+2) * 80;
+					enemies2[k].x = randomX;
+					let audio = new Audio("explosion.mp3");
+					audio.play()
 				}
 			}
 		}
@@ -211,7 +247,9 @@
 				score -= 500;
 				explosion(enemies[j].x,enemies[j].y);
 				enemies[j].y = 0;
-				enemies[j].x = (Math.floor(Math.random()*9)+2) * 80;
+				enemies[j].x = randomX;
+				var audio2 = new Audio("choque.mp3");
+				audio2.play();
 			}
 		}
 		for(let k=0; k<enemies2.length; k++){
@@ -220,7 +258,9 @@
 				score -= 500;
 				explosion(enemies2[k].x,enemies2[k].y);
 				enemies2[k].y = 0;
-				enemies2[k].x = (Math.floor(Math.random()*9)+2) * 80;
+				enemies2[k].x = randomX2;
+				var audio2 = new Audio("choque.mp3");
+				audio2.play();
 			}
 		}
 	}
@@ -230,11 +270,8 @@
 		document.getElementById('explosion').style['top'] = y + 'px';
 		document.getElementById('explosion').style['left'] = x + 'px';
 		document.getElementById('explosion').style['display'] = 'block';
-
-		var audio = document.getElementById("audio");
-		audio.play();
 		
-		setTimeout(timeoutExplosion,200)
+		setTimeout(timeoutExplosion,400)
 		function timeoutExplosion(){
 			document.getElementById('explosion').style['display'] = 'none';
 		}
@@ -247,37 +284,50 @@
 
 
 	// Mapeo de teclas y movimiento del mouse
+	
 	var rightPressed = false;
 	var leftPressed = false;
 	var upPressed = false;
 	var downPressed = false;
-
-	document.addEventListener("keydown", keyDownHandler, false);
-   document.addEventListener("keyup", keyUpHandler, false);
-	document.addEventListener("mousemove", mouseMoveHandler, false);
 	
-	function mouseMoveHandler(e) {
-		if(e.clientX > 0 && e.clientX < 870 && e.clientY > 0 && e.clientY < 555) {
+	document.getElementById('Start').onclick = function(){
+		if(pause == 1){
+			pause = 0;
+			gameloop();	//inicio
+			intervalAutoBullet = setInterval(autoBullets,100);  //Bucle autodisparo
+		}else{
+			pause = 1;
+			window.cancelAnimationFrame(startLoopgame);
+			clearInterval(intervalAutoBullet);
+		}
+	}
+
+	document.addEventListener("keydown", keyDown, false);
+	document.addEventListener("keyup", keyUp, false);
+	document.addEventListener("mousemove", mouseMove, false);
+	
+	function mouseMove(e) {
+		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && check) {
 			hero.x = e.clientX;
 			hero.y = e.clientY;
 		}
 	}
 	
-   function keyDownHandler(e) {
-      if(e.keyCode == 39) {
-            rightPressed = true;
-      }
-		else if(e.keyCode == 37) {
-				leftPressed = true;
+	function keyDown(e) {
+		if(e.keyCode == 39) {
+				rightPressed = true;
 		}
-      if(e.keyCode == 38) {
-            upPressed = true;
-      }
+			else if(e.keyCode == 37) {
+					leftPressed = true;
+			}
+		if(e.keyCode == 38) {
+				upPressed = true;
+		}
 		else if(e.keyCode == 40) {
 				downPressed = true;
 		}
 	}
-	function keyUpHandler(e) {
+	function keyUp(e) {
 		if(e.keyCode == 39) {
 				rightPressed = false;
 		}
@@ -292,6 +342,7 @@
 		}
 	}
 	
+
 	var pause = 1;
 	document.onkeydown = function(a){
 
@@ -332,6 +383,7 @@ Mejorado sistema de movimiento del 'hero' con las teclas, ahora es mas fluido y 
 Que dispare de manera automática .
 Asignar una tecla como pausa.
 Asignar movimiento 'hero' al movimiento del mouse.
+mejorado los sonidos.
 
 Faltantes:
 Contador de vidas: al llegar a 0, reiniciar el juego
