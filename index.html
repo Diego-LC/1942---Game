@@ -317,9 +317,10 @@
 	document.addEventListener("touchmove", touchMove, false);
 	
 	function touchMove(e) {
-		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && Tcheck) {
-			hero.x = e.clientX;
-			hero.y = e.clientY;
+		evt.preventDefault();
+		if(e.touches[0].clientX > 0 && e.touches[0].clientX < 770 && e.touches[0].clientY > 0 && e.touches[0].clientY < 555 && Tcheck) {
+			hero.x = e.touches[0].clientX;
+			hero.y = e.touches[0].clientY;
 		}
 	}
 	
