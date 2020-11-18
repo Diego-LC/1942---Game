@@ -94,7 +94,8 @@
 	<button id='Start'>Comenzar</button>
 	<div id="checkbox">
 		<input id="mousecheck" type="checkbox" checked>
-		<label for="mousecheck">Asociar movimiento al mouse o touch</label>
+		<label for="mousecheck">Asociar movimiento al mouse o touch</label><br><br>
+		<input id="touchcheck" type="checkbox" checked> Asociar movimiento al touch 
 	</div>
 	
 	
@@ -109,7 +110,8 @@
 	var bullets = [];	
 	var score = 0;
 	var startLoopgame;
-	var check;
+	var Mcheck;
+	var Tcheck;
 	
 	
 
@@ -131,7 +133,8 @@
 		displayBullets();
 		detectCollisionBullets();
 		detectCollisionHero();
-		check = document.getElementById('mousecheck').checked;
+		Mcheck = document.getElementById('mousecheck').checked;
+		Tcheck = document.getElementById('touchcheck').checked;
 		
 		if(rightPressed) {
 			hero.x += 1;
@@ -306,7 +309,7 @@
 	document.addEventListener("mousemove", mouseMove, false);
 	
 	function mouseMove(e) {
-		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && check) {
+		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && Mcheck) {
 			hero.x = e.clientX;
 			hero.y = e.clientY;
 		}
@@ -314,7 +317,7 @@
 	document.addEventListener("touchmove", touchMove, false);
 	
 	function touchMove(e) {
-		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && check) {
+		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && Tcheck) {
 			hero.x = e.clientX;
 			hero.y = e.clientY;
 		}
