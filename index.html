@@ -94,7 +94,7 @@
 	<button id='Start'>Comenzar</button>
 	<div id="checkbox">
 		<input id="mousecheck" type="checkbox" checked>
-		<label for="mousecheck">Asociar movimiento al mouse</label>
+		<label for="mousecheck">Asociar movimiento al mouse o touch</label>
 	</div>
 	
 	
@@ -204,7 +204,6 @@
 			}
 		}
 	}
-
 	function displayBullets(){
 		let output = '';
 		for(let i=0; i<bullets.length; i++){
@@ -258,7 +257,7 @@
 				score -= 500;
 				explosion(enemies2[k].x,enemies2[k].y);
 				enemies2[k].y = 0;
-				enemies2[k].x = randomX2;
+				enemies2[k].x = (Math.random()*700)+38;
 				var audio2 = new Audio("choque.mp3");
 				audio2.play();
 			}
@@ -312,6 +311,14 @@
 			hero.y = e.clientY;
 		}
 	}
+	document.addEventListener("touchmove", touchMove, false);
+	
+	function touchMove(e) {
+		if(e.clientX > 0 && e.clientX < 770 && e.clientY > 0 && e.clientY < 555 && check) {
+			hero.x = e.clientX;
+			hero.y = e.clientY;
+		}
+	}
 	
 	function keyDown(e) {
 		if(e.keyCode == 39) {
@@ -347,7 +354,7 @@
 	document.onkeydown = function(a){
 
 		if(a.keyCode == 82){ //tecla R
-         location.reload();
+      location.reload();
 		}	
 		if(a.keyCode == 13 || a.keyCode == 32){ //tecla Enter o space  	//Inicio-Pausa
 			if(pause == 0){
@@ -380,10 +387,10 @@ Otras mejoras:
 
 Listos:
 Mejorado sistema de movimiento del 'hero' con las teclas, ahora es mas fluido y de menor tiempo de respuesta.						
-Que dispare de manera automática .
+Función de disparo de manera automática .
 Asignar una tecla como pausa.
 Asignar movimiento 'hero' al movimiento del mouse.
-mejorado los sonidos.
+mejorado los sonidos y gif de explosion.
 
 Faltantes:
 Contador de vidas: al llegar a 0, reiniciar el juego
